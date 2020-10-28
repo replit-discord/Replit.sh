@@ -33,6 +33,13 @@ def compileLine(id): # When passed the id for a short URL, returns a preformatte
 @app.route('/')
 def index():
 	global users
+	if not request.headers['X-Replit-User-Id']:
+		return render_template(
+		'index.html',
+		user_id=request.headers['X-Replit-User-Id'],
+		user_name=request.headers['X-Replit-User-Name'],
+		user_roles=request.headers['X-Replit-User-Roles']
+	)
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		return render_template(
 		'submit.html',
@@ -49,6 +56,10 @@ def index():
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
 	)
+
+@app.route('/wp-login.php')
+def wploginphp():
+	return redirect(url + 'dash')
 
 @app.route('/dash')
 def dashboard():

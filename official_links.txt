@@ -1,6 +1,6 @@
 https://replit.sh/replit-data
 https://replit.sh/replit-new-talent
-https://replit.sh/replit-intern -- https://jobs.lever.co/replit/37e93ef3-9329-426a-8371-96865959ae1b
+https://replit.sh/replit-intern
 https://replit.sh/replit-designer
 https://replit.sh/replit-marketer
 https://replit.sh/replit-platform

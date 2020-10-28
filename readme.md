@@ -11,6 +11,8 @@ All Releases:
 	- 3.0p - Teams
 - V2
 	- 2.3b - Added link editing ability
+	- 2.22 - Fixed error checking on main screen
+	- 2.21 - Caused /wp-login.php to redirect to the dashboard
 	- 2.2 - Added sitemap, robots.txt, and humans.txt
 	- 2.1 - Added error handling and safer user verification
 	- 2.0 - Changed database to allow for official repl.it urls to be set
