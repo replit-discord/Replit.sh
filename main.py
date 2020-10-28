@@ -115,6 +115,10 @@ def sitemap():
 def robots():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'robots.txt')
 
+@app.route('/humans.txt')
+def humans():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'humans.txt')
+
 @app.route('/getid')
 def getId():
     return render_template(
