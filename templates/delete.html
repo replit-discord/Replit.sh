@@ -1,0 +1,30 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Delete Entry | Replit.sh</title>
+</head>
+
+<body>
+	<form class="form-horizontal" action="/del" method="post">
+		<fieldset>
+			<legend>Delete Entry | Replit.sh</legend>
+			<p>Are you sure you want to delete this entry? Your changes cannot be reversed.</p>
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="name">Id</label>  
+				<div class="col-md-4">
+					<input readonly="" name="id" id="id" value="{{ id }}"> 
+				</div>
+			</div>
+			<br>
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="submit"></label>
+				<div class="col-md-4">
+					<input type="submit" value="Delete">
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>

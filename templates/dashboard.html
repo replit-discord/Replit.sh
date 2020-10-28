@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dash | Replit.sh</title>
+</head>
+<body>
+	<fieldset>
+	<legend>Dashboard | Replit.sh</legend>
+	<p>Your URLs: </p>
+	<p>Do note any changes which you make are permanent and irreversable.</p>
+	<a href="/">Make a New Link</a>
+	<table style="width:100%">
+		<tr>
+			<th>ID</th>
+			<th>Destination URL</th>
+			<th>Actions</th>
+		</tr>
+		{{ idTable|safe }}
+	</table>
+	{{ error|safe }}
+	</fieldset>
+</body>
+</html>

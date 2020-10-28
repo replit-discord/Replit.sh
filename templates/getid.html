@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+	<title>ID Getter | Replit.sh</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	{% if user_id %}
+	<h1>Hello, {{ user_name }}!</h1>
+	<p>Your user id is {{ user_id }}.</p>
+	<p>Your roles are {{ user_roles }}.</p>
+	{% else %}
+	Hello! Please log in.
+	<div>
+		<script authed="location.reload()" src="https://auth.turbio.repl.co/script.js"></script>
+	</div>
+	{% endif %}
+</body>
+</html>
