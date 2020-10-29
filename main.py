@@ -5,15 +5,13 @@ import random, string, json, os, validators
 # Debugging Flags
 print_db_on_start = False
 
-
 # Shortener Setup
 url = "https://replit.sh/"
 
 if print_db_on_start:
 	print(list(db.keys()))
 
-with open('ids.json') as f:
-	users = json.load(f)
+users = os.getenv("IDS")
 
 app = Flask('app')
 
