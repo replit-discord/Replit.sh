@@ -6,10 +6,8 @@ Versions
 All Releases:
 (a = alpha, b = beta, p = planned)
 
-- V3
-	- 3.1p - Database importing and exporting
-	- 3.0p - Teams
 - V2
+	- 2.4p - Database importing and exporting
 	- 2.3 - Added link editing ability
 	- 2.23 - Key storage hotfix
 	- 2.22 - Fixed error checking on main screen
