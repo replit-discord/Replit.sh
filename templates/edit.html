@@ -1,0 +1,42 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Edit Entry | Replit.sh</title>
+</head>
+
+<body>
+	<form class="form-horizontal" action="/edt" method="post">
+		<fieldset>
+			<legend>Edit Entry | Replit.sh</legend>
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="name">Link ID</label>  
+				<div class="col-md-4">
+					<input readonly="" name="id" id="id" value="{{ id }}"> 
+				</div>
+			</div>
+<div class="form-group">
+	<label class="col-md-4 control-label" for="name">Old Link</label>  
+	<div class="col-md-4">
+	<input readonly="" name="oldurl" id="oldurl" value="{{ oldurl }}"> 
+	</div>
+</div>
+			<br>
+			<div class="form-group">
+	<label class="col-md-4 control-label" for="name">New Link</label>  
+	<div class="col-md-4">
+	<input type="url" name="newurl" id="newurl" placeholder="https://example.com" pattern="https://.*" size="30" required> 
+	</div>
+</div>
+			<br>
+			<div class="form-group">
+				<label class="col-md-4 control-label" for="submit"></label>
+				<div class="col-md-4">
+					<input type="submit" value="Edit">
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</body>
+</html>

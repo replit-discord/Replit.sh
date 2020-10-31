@@ -10,7 +10,7 @@ All Releases:
 	- 3.1p - Database importing and exporting
 	- 3.0p - Teams
 - V2
-	- 2.3b - Added link editing ability
+	- 2.3 - Added link editing ability
 	- 2.23 - Key storage hotfix
 	- 2.22 - Fixed error checking on main screen
 	- 2.21 - Caused /wp-login.php to redirect to the dashboard

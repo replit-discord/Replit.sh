@@ -11,7 +11,7 @@ url = "https://replit.sh/"
 if print_db_on_start:
 	print(list(db.keys()))
 
-users = os.getenv("IDS")
+users = json.loads(os.getenv("IDS"))
 
 app = Flask('app')
 
@@ -25,8 +25,7 @@ def getStrings(id):
 	return urls
 
 def compileLine(id): # When passed the id for a short URL, returns a preformatted html table line
-	url = db[id]
-	return '<tr><td>' + id[10:] + '</td><td>' + url + '</td><td>' + '<a href ="https://replit.sh/delete/' + id[10:] + '">Delete Entry</a></td></tr>'
+	return '<tr><td>' + id[10:] + '</td><td>' + db[id] + '</td><td>' + '<a href ="https://replit.sh/delete/' + id[10:] + '">Delete Entry</a></td><td><a href ="https://replit.sh/edit/' + id[10:] + '">Edit Entry</a></td></tr>'
 
 @app.route('/')
 def index():
@@ -96,6 +95,19 @@ def delete(id):
 		id = id
 	)
 
+@app.route('/edit/<string:id>')
+def edit(id):
+	if not id:
+		id = "Please stop trying to break the site lol"
+	return render_template(
+		'edit.html',
+		user_id=request.headers['X-Replit-User-Id'],
+		user_name=request.headers['X-Replit-User-Name'],
+		user_roles=request.headers['X-Replit-User-Roles'],
+		oldurl = db["short_url_" + id],
+		id = id
+	)
+
 @app.route('/del', methods=['POST'])
 def deleteEntry():
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
@@ -106,6 +118,21 @@ def deleteEntry():
 			users_ids.remove("short_url_" + id)
 			del db["short_url_" + id]
 			db["user_id_" + user_id] = users_ids
+			return redirect(url + "dash", 302)
+		except:
+			return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+	else:
+		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+
+@app.route('/edt', methods=['POST'])
+def editEntry():
+	global url
+	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
+		user_id = request.headers['X-Replit-User-Id']
+		id = request.form['id']
+		newurl = request.form['newurl']
+		try:
+			db["short_url_" + id] = newurl
 			return redirect(url + "dash", 302)
 		except:
 			return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
