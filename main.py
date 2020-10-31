@@ -4,12 +4,26 @@ import random, string, json, os, validators
 
 # Debugging Flags
 print_db_on_start = False
+export_db_on_start = False
 
 # Shortener Setup
 url = "https://replit.sh/"
 
 if print_db_on_start:
 	print(list(db.keys()))
+
+if export_db_on_start:
+	outdb = {}
+	print("Starting DB Export...")
+	for x in list(db.keys()):
+		print("Set key " + str(x) + " to " + str(db[x]))
+		outdb[x] = db[x]
+	f = open('out.json', 'w')
+	print("File opened...")
+	f.write(db)
+	print("File written...")
+	f.close()
+	print("File closed...")
 
 users = json.loads(os.getenv("IDS"))
 
@@ -53,6 +67,35 @@ def index():
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
 	)
+
+@app.route('/custom')
+def custom():
+	global users
+	if not request.headers['X-Replit-User-Id']:
+		return render_template(
+		'index.html',
+		user_id=request.headers['X-Replit-User-Id'],
+		user_name=request.headers['X-Replit-User-Name'],
+		user_roles=request.headers['X-Replit-User-Roles']
+	)
+	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template(
+		'custom.html',
+		user_id=request.headers['X-Replit-User-Id'],
+		user_name=request.headers['X-Replit-User-Name'],
+		error=""
+	)
+	elif len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) not in users:
+		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!")
+	else:
+		return render_template(
+		'index.html',
+		user_id=request.headers['X-Replit-User-Id'],
+		user_name=request.headers['X-Replit-User-Name'],
+		user_roles=request.headers['X-Replit-User-Roles']
+	)
+
+
 
 @app.route('/wp-login.php')
 def wploginphp():
@@ -197,6 +240,32 @@ def newEntry():
 		return render_template('done.html', newUrl = url + key[10:])
 	else:
 		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+
+@app.route('/newcustom', methods=['POST'])
+def newCustom():
+	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
+		key = request.headers['id']
+		keys = list(db.keys())
+		if key in keys:
+			return render_template('error.html', code = "401", message = "That ID Already Exists!")
+		if not validators.url(str(request.form['url'])):
+			return render_template(
+				'manual.html',
+				user_id=user,
+				user_name=request.headers['X-Replit-User-Name'],
+				error="That was not a valid URL. Please enter a valid URL and try again."
+			)
+		db[key] = request.form['url']
+		try:
+			strings = list(getStrings(request.headers['X-Replit-User-Id']))
+		except:
+			strings = []
+		strings.append(key)
+		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
+		return render_template('done.html', newUrl = url + key[10:])
+	else:
+		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+
 
 @app.errorhandler(400)
 def error_bad_request(e):
