@@ -7,7 +7,7 @@ All Releases:
 (a = alpha, b = beta, p = planned)
 
 - V2
-	- 2.4p - Database importing and exporting
+	- 2.4 - Database importing and exporting
 	- 2.3 - Added link editing ability
 	- 2.23 - Key storage hotfix
 	- 2.22 - Fixed error checking on main screen

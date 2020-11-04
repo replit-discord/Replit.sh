@@ -5,6 +5,7 @@ import random, string, json, os, validators
 # Debugging Flags
 print_db_on_start = False
 export_db_on_start = False
+import_db_on_start = False
 
 # Shortener Setup
 url = "https://replit.sh/"
@@ -19,11 +20,26 @@ if export_db_on_start:
 		print("Set key " + str(x) + " to " + str(db[x]))
 		outdb[x] = db[x]
 	f = open('out.json', 'w')
-	print("File opened...")
-	f.write(db)
-	print("File written...")
-	f.close()
-	print("File closed...")
+	with open('out.json', 'w') as outfile:
+		print("File opened...")
+		json.dump(outdb, outfile)
+		print("File written...")
+		print("File closed...")
+
+if import_db_on_start:
+	print("Clearning old db")
+	for x in list(db.keys()):
+		print("Cleared key " + str(x))
+		del db[x]
+	print("Opening JSON File")
+	with open("in.json", "r") as read_file:
+    print("Converting JSON encoded data into Python dictionary")
+    indb = json.load(read_file)
+	print("Starting DB Import...")
+	for key, value in indb.items():
+		print ("Set key " + str(key) + " to " + str(value))
+		db[key] = db[value]
+	print("Database imported")
 
 users = json.loads(os.getenv("IDS"))
 
@@ -94,8 +110,6 @@ def custom():
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
 	)
-
-
 
 @app.route('/wp-login.php')
 def wploginphp():
@@ -244,7 +258,7 @@ def newEntry():
 @app.route('/newcustom', methods=['POST'])
 def newCustom():
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
-		key = request.headers['id']
+		key = "short_url_" + request.form['id']
 		keys = list(db.keys())
 		if key in keys:
 			return render_template('error.html', code = "401", message = "That ID Already Exists!")
