@@ -22,17 +22,31 @@ If you follow [@replit](https://twitter.com/replit) on Twitter, you may have rea
 
 ## Features
 - Simple Login Through Repl.it:
+
 ![Login with Repl.it](http://static.piemadd.com/blogposts/replit.sh/login1.jpg)
+
 ![Login with Repl.it](http://static.piemadd.com/blogposts/replit.sh/login2.jpg)
+
 - Dashboard of all links for a user:
+
 ![Dashboard](http://static.piemadd.com/blogposts/replit.sh/dash.jpg)
+
 - Easy to use home-page:
+
 ![Homepage](http://static.piemadd.com/blogposts/replit.sh/home.jpg)
+
 - Custom URLs:
+
 ![Custom URLs](http://static.piemadd.com/blogposts/replit.sh/custom.jpg)
+
 - Editing URLs:
+
 ![Editing URLs](http://static.piemadd.com/blogposts/replit.sh/edit.jpg)
+
 - Database I/O:
+
 ![Database I/O](http://static.piemadd.com/blogposts/replit.sh/dbio.jpg)
+
 - Deleting URLs:
+
 ![Deleting URLs](http://static.piemadd.com/blogposts/replit.sh/delete.jpg)
