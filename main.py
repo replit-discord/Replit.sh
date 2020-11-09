@@ -4,11 +4,12 @@ import random, string, json, os, validators
 
 # Debugging Flags
 print_db_on_start = False
-export_db_on_start = False
-import_db_on_start = False
+export_db_on_start = True
+import_db_on_start = True
 
 # Shortener Setup
-url = "https://replit.sh/"
+url = "https://replit.sh/" # URL of Your Site
+siteName = "Replit.sh" # Name of your Site
 
 if print_db_on_start:
 	print(list(db.keys()))
@@ -33,12 +34,12 @@ if import_db_on_start:
 		del db[x]
 	print("Opening JSON File")
 	with open("in.json", "r") as read_file:
-    print("Converting JSON encoded data into Python dictionary")
-    indb = json.load(read_file)
+		print("Converting JSON encoded data into Python dictionary")
+		indb = json.load(read_file)
 	print("Starting DB Import...")
 	for key, value in indb.items():
 		print ("Set key " + str(key) + " to " + str(value))
-		db[key] = db[value]
+		db[key] = value
 	print("Database imported")
 
 users = json.loads(os.getenv("IDS"))
@@ -59,10 +60,12 @@ def compileLine(id): # When passed the id for a short URL, returns a preformatte
 
 @app.route('/')
 def index():
+	global siteName
 	global users
 	if not request.headers['X-Replit-User-Id']:
 		return render_template(
 		'index.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
@@ -70,15 +73,17 @@ def index():
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		return render_template(
 		'submit.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		error=""
 	)
 	elif len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) not in users:
-		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!")
+		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!", siteName=siteName)
 	else:
 		return render_template(
 		'index.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
@@ -86,10 +91,12 @@ def index():
 
 @app.route('/custom')
 def custom():
+	global siteName
 	global users
 	if not request.headers['X-Replit-User-Id']:
 		return render_template(
 		'index.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
@@ -97,15 +104,17 @@ def custom():
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		return render_template(
 		'custom.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		error=""
 	)
 	elif len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) not in users:
-		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!")
+		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't an allowed user, sorry!")
 	else:
 		return render_template(
 		'index.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
@@ -113,10 +122,12 @@ def custom():
 
 @app.route('/wp-login.php')
 def wploginphp():
+	global siteName
 	return redirect(url + 'dash')
 
 @app.route('/dash')
 def dashboard():
+	global siteName
 	try:
 		ids = getStrings(request.headers['X-Replit-User-Id'])
 		idTable = ""
@@ -124,6 +135,7 @@ def dashboard():
 			idTable = idTable + compileLine(id)
 		return render_template(
 			'dashboard.html',
+			siteName=siteName,
 			user_id=request.headers['X-Replit-User-Id'],
 			user_name=request.headers['X-Replit-User-Name'],
 			user_roles=request.headers['X-Replit-User-Roles'],
@@ -133,6 +145,7 @@ def dashboard():
 	except:
 		return render_template(
 			'dashboard.html',
+			siteName=siteName,
 			user_id=request.headers['X-Replit-User-Id'],
 			user_name=request.headers['X-Replit-User-Name'],
 			user_roles=request.headers['X-Replit-User-Roles'],
@@ -142,10 +155,12 @@ def dashboard():
 
 @app.route('/delete/<string:id>')
 def delete(id):
+	global siteName
 	if not id:
 		id = "Please stop trying to break the site lol"
 	return render_template(
 		'delete.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles'],
@@ -154,10 +169,12 @@ def delete(id):
 
 @app.route('/edit/<string:id>')
 def edit(id):
+	global siteName
 	if not id:
 		id = "Please stop trying to break the site lol"
 	return render_template(
 		'edit.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles'],
@@ -167,6 +184,7 @@ def edit(id):
 
 @app.route('/del', methods=['POST'])
 def deleteEntry():
+	global siteName
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		user_id = request.headers['X-Replit-User-Id']
 		id = request.form['id']
@@ -177,12 +195,13 @@ def deleteEntry():
 			db["user_id_" + user_id] = users_ids
 			return redirect(url + "dash", 302)
 		except:
-			return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+			return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 	else:
-		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 
 @app.route('/edt', methods=['POST'])
 def editEntry():
+	global siteName
 	global url
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		user_id = request.headers['X-Replit-User-Id']
@@ -192,9 +211,9 @@ def editEntry():
 			db["short_url_" + id] = newurl
 			return redirect(url + "dash", 302)
 		except:
-			return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+			return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 	else:
-		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 
 @app.route('/favicon.ico')
 def favicon():
@@ -203,6 +222,10 @@ def favicon():
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'sitemap.xml')
+
+@app.route('/googlecec87f30263d281f.html')
+def googleverifbsorwhatever():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'googlecec87f30263d281f.html')
 
 @app.route('/robots.txt')
 def robots():
@@ -214,8 +237,10 @@ def humans():
 
 @app.route('/getid')
 def getId():
-    return render_template(
+	global siteName
+	return render_template(
 		'getid.html',
+		siteName=siteName,
 		user_id=request.headers['X-Replit-User-Id'],
 		user_name=request.headers['X-Replit-User-Name'],
 		user_roles=request.headers['X-Replit-User-Roles']
@@ -223,14 +248,16 @@ def getId():
 
 @app.route('/<string:key>', methods=['GET'])
 def sendUrl(key):
+	global siteName
 	key = "short_url_" + key
 	if not db[key]:
-		return render_template('error.html', code = "404", message = "That URL could not be found!")
+		return render_template('error.html', code = "404", siteName=siteName, message = "That URL could not be found!")
 	else:
 		return redirect(db[key], 302)
 
 @app.route('/new', methods=['POST'])
 def newEntry():
+	global siteName
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		key = "short_url_" + newString()
 		keys = list(db.keys())
@@ -240,6 +267,7 @@ def newEntry():
 		if not validators.url(str(request.form['url'])):
 			return render_template(
 				'submit.html',
+				siteName=siteName,
 				user_id=user,
 				user_name=request.headers['X-Replit-User-Name'],
 				error="That was not a valid URL. Please enter a valid URL and try again."
@@ -251,20 +279,22 @@ def newEntry():
 			strings = []
 		strings.append(key)
 		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
-		return render_template('done.html', newUrl = url + key[10:])
+		return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
 	else:
-		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
 @app.route('/newcustom', methods=['POST'])
 def newCustom():
+	global siteName
 	if len(request.headers['X-Replit-User-Id']) != 0 and int(request.headers['X-Replit-User-Id']) in users:
 		key = "short_url_" + request.form['id']
 		keys = list(db.keys())
 		if key in keys:
-			return render_template('error.html', code = "401", message = "That ID Already Exists!")
+			return render_template('error.html', siteName=siteName, code = "401", message = "That ID Already Exists!")
 		if not validators.url(str(request.form['url'])):
 			return render_template(
 				'manual.html',
+				siteName=siteName,
 				user_id=user,
 				user_name=request.headers['X-Replit-User-Name'],
 				error="That was not a valid URL. Please enter a valid URL and try again."
@@ -276,41 +306,49 @@ def newCustom():
 			strings = []
 		strings.append(key)
 		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
-		return render_template('done.html', newUrl = url + key[10:])
+		return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
 	else:
-		return render_template('error.html', code = "401", message = "You aren't allowed to do that!")
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
 
 @app.errorhandler(400)
 def error_bad_request(e):
-	return render_template('error.html', code = "400", message = "Bad Request")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "400", message = "Bad Request")
 
 @app.errorhandler(401)
 def error_unauthorized(e):
-	return render_template('error.html', code = "401", message = "Unauthorized")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "401", message = "Unauthorized")
 
 @app.errorhandler(403)
 def error_forbidden(e):
-	return render_template('error.html', code = "403", message = "Forbidden")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "403", message = "Forbidden")
 
 @app.errorhandler(404)
 def error_page_not_found(e):
-	return render_template('error.html', code = "404", message = "Page not Found")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "404", message = "Page not Found")
 
 @app.errorhandler(409)
 def error_conflict(e):
-	return render_template('error.html', code = "409", message = "Conflict")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "409", message = "Conflict")
 
 @app.errorhandler(500)
 def error_internal_server_error(e):
-	return render_template('error.html', code = "500", message = "Internal Server Error")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "500", message = "Internal Server Error")
 
 @app.errorhandler(501)
 def error_not_implemented(e):
-	return render_template('error.html', code = "501", message = "Not Implemented")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "501", message = "Not Implemented")
 
 @app.errorhandler(502)
 def error_bad_gateway(e):
-	return render_template('error.html', code = "502", message = "Bad Gateway")
+	global siteName
+	return render_template('error.html', siteName=siteName, code = "502", message = "Bad Gateway")
 
 app.run(host='0.0.0.0', port=8080)

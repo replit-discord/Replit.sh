@@ -1,12 +1,11 @@
-# Replit.sh
-
-Replit.sh is the official URL shortener of Repl.it.
-
-Versions
+# Versions
 All Releases:
 (a = alpha, b = beta, p = planned)
 
 - V2
+	- 2.52 - Added dynamic site naming
+	- 2.51 - Added google verification, rearranged .md files
+	- 2.5 - Added ability to make custom urls
 	- 2.4 - Database importing and exporting
 	- 2.3 - Added link editing ability
 	- 2.23 - Key storage hotfix
