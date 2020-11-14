@@ -3,6 +3,7 @@ All Releases:
 (a = alpha, b = beta, p = planned)
 
 - V2
+	- 2.5.3 - Added logging
 	- 2.5.2 - Added dynamic site naming
 	- 2.5.1 - Added google verification, rearranged .md files
 	- 2.5.0 - Added ability to make custom urls
