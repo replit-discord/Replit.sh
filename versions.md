@@ -2,7 +2,19 @@
 All Releases:
 (a = alpha, b = beta, p = planned)
 
+- V4
+	-
+	- 4.3.2 p - Adding centralized linking module
+	- 4.3.1 p - Adding load balancing module
+	- 4.3.0 p - Adding anonomized tracking to csv files module
+	- 4.2.0 p - Adding plugins system
+	- 4.1.0 p - Making system modular
+	- 4.0.0 p - Adding production-server support
+- V3
+	- 3.1.0 p - Added admin panel
+	- 3.0.0 p - Adding automatic updating script
 - V2
+	- 2.5.4 - Cleaned up code
 	- 2.5.3 - Added logging
 	- 2.5.2 - Added dynamic site naming
 	- 2.5.1 - Added google verification, rearranged .md files
