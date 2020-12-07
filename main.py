@@ -2,16 +2,15 @@ from flask import Flask, render_template, request, redirect, send_from_directory
 from replit import db
 import random, string, json, os, validators, logging
 
-# Debugging Flags
 print_db_on_start = False
-export_db_on_start = True
+export_db_on_start = False
 import_db_on_start = False
-
-logging.basicConfig(filename='replitsh.log',level=logging.INFO) #if you replate INFO with DEBUGGING have fun saying goodbye to your db lol
 
 # Shortener Setup
 url = "https://replit.sh/" # URL of Your Site
 siteName = "Replit.sh" # Name of your Site
+
+logging.basicConfig(filename='replitsh.log',level=logging.INFO) #if you replate INFO with DEBUGGING have fun saying goodbye to your db lol
 
 if print_db_on_start:
 	print(list(db.keys()))
