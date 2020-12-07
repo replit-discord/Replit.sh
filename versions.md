@@ -14,6 +14,7 @@ All Releases:
 	- 3.1.0 p - Added admin panel
 	- 3.0.0 p - Adding automatic updating script
 - V2
+	- 2.5.5 - Migrated login script
 	- 2.5.4 - Cleaned up code
 	- 2.5.3 - Added logging
 	- 2.5.2 - Added dynamic site naming
