@@ -1,6 +1,6 @@
 # Replit.sh: Repl.it's Internal URL Shortener
 ## Preface
-If you follow [@replit](https://twitter.com/replit) on Twitter, you may have realized some links showing up on our posts starting with the url [replit.sh](https://replit.sh). I have been working on it for almost two weeks now and have decided it is ready for public use. 
+If you follow [@replit](https://twitter.com/replit) on Twitter, you may have realized some links showing up on our posts starting with the url [replit.sh](https://replit.sh). Versions 3 and 4 are on hold for now due to the need for dependencies to be built up in the Replit.sh ecosystem (such as a rework of the modules). 
 
 ## Notes:
 - This URL Shortener can only be run on Repl.it due to it using [Repl.it DB](https://docs.repl.it/misc/database).
