@@ -63,6 +63,8 @@ def compileLine(id): # When passed the id for a short URL, returns a preformatte
 
 @app.route('/')
 def index():
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
+		return render_template('index.html', siteName=siteName)
 	try:
 		return render_template(
 		'submit.html',
@@ -156,7 +158,7 @@ def edit(id):
 
 @app.route('/del', methods=['POST'])
 def deleteEntry():
-	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 	try:
 		user_id = request.headers['X-Replit-User-Id']
@@ -174,7 +176,7 @@ def deleteEntry():
 
 @app.route('/edt', methods=['POST'])
 def editEntry():
-	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 	try:
 		user_id = request.headers['X-Replit-User-Id']
@@ -250,36 +252,33 @@ def sendUrl(key):
 
 @app.route('/new', methods=['POST'])
 def newEntry():
-	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
-	try:
+	key = "short_url_" + newString()
+	keys = list(db.keys())
+	while key in keys:
 		key = "short_url_" + newString()
 		keys = list(db.keys())
-		while key in keys:
-			key = "short_url_" + newString()
-			keys = list(db.keys())
-		if not validators.url(str(request.form['url'])):
-			return render_template(
-				'submit.html',
-				siteName=siteName,
-				user_id=user,
-				user_name=request.headers['X-Replit-User-Name'],
-				error="That was not a valid URL. Please enter a valid URL and try again."
-			)
-		db[key] = request.form['url']
-		try:
-			strings = list(getStrings(request.headers['X-Replit-User-Id']))
-		except:
-			strings = []
-		strings.append(key)
-		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
-		return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
+	if not validators.url(str(request.form['url'])):
+		return render_template(
+			'submit.html',
+			siteName=siteName,
+			user_id=user,
+			user_name=request.headers['X-Replit-User-Name'],
+			error="That was not a valid URL. Please enter a valid URL and try again."
+		)
+	db[key] = request.form['url']
+	try:
+		strings = list(getStrings(request.headers['X-Replit-User-Id']))
 	except:
-		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+		strings = []
+	strings.append(key)
+	db["user_id_" + request.headers['X-Replit-User-Id']] = strings
+	return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
 
 @app.route('/newcustom', methods=['POST'])
 def newCustom():
-	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 	try:
 		key = "short_url_" + request.form['id']
@@ -307,45 +306,42 @@ def newCustom():
 
 @app.route('/newsocial', methods=['POST'])
 def newSocial():
-	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
-	try:
-		urlSubmitted = request.form['url']
+	urlSubmitted = request.form['url']
+	key = newString()
+	keyFinished = "short_url_" + key 
+	keys = list(db.keys())
+	while keyFinished in keys:
 		key = newString()
 		keyFinished = "short_url_" + key 
 		keys = list(db.keys())
-		while keyFinished in keys:
-			key = newString()
-			keyFinished = "short_url_" + key 
-			keys = list(db.keys())
-		if not validators.url(str(request.form['url'])):
-			return render_template(
-				'social.html',
-				siteName=siteName,
-				user_id=user,
-				user_name=request.headers['X-Replit-User-Name'],
-				error="That was not a valid URL. Please enter a valid URL and try again."
-			)
-		try:
-			db[keyFinished] = urlSubmitted
-			indexOfAt = urlSubmitted.index("@")
-			indexOfSlash = urlSubmitted.index("/", indexOfAt)
-			title = urlSubmitted[indexOfSlash + 1:]
-			username = urlSubmitted[indexOfAt + 1:indexOfSlash]
-			socialMeta = {"title": title, "username": username}
-			db['social_media_' + key] = socialMeta
-		except:
-			return render_template('error.html', siteName=siteName, code = "401", message = "Not a valid Replit URL!")
-
-		try:
-			strings = list(getStrings(request.headers['X-Replit-User-Id']))
-		except:
-			strings = []
-		strings.append(keyFinished)
-		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
-		return render_template('done.html', siteName=siteName, newUrl = url + keyFinished[10:])
+	if not validators.url(str(request.form['url'])):
+		return render_template(
+			'social.html',
+			siteName=siteName,
+			user_id=user,
+			user_name=request.headers['X-Replit-User-Name'],
+			error="That was not a valid URL. Please enter a valid URL and try again."
+		)
+	try:
+		db[keyFinished] = urlSubmitted
+		indexOfAt = urlSubmitted.index("@")
+		indexOfSlash = urlSubmitted.index("/", indexOfAt)
+		title = urlSubmitted[indexOfSlash + 1:]
+		username = urlSubmitted[indexOfAt + 1:indexOfSlash]
+		socialMeta = {"title": title, "username": username}
+		db['social_media_' + key] = socialMeta
 	except:
-		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+		return render_template('error.html', siteName=siteName, code = "401", message = "Not a valid Replit URL!")
+
+	try:
+		strings = list(getStrings(request.headers['X-Replit-User-Id']))
+	except:
+		strings = []
+	strings.append(keyFinished)
+	db["user_id_" + request.headers['X-Replit-User-Id']] = strings
+	return render_template('done.html', siteName=siteName, newUrl = url + keyFinished[10:])
 
 @app.errorhandler(400)
 def error_bad_request(e):
