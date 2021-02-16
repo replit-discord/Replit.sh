@@ -9,6 +9,7 @@ python = "^3.8"
 flask = "^1.1.2"
 replit = "^2.0.0"
 validators = "^0.18.1"
+werkzeug = "^1.0.1"
 
 [tool.poetry.dev-dependencies]
 

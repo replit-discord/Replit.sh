@@ -2,25 +2,19 @@
 <head>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>New Custom Entry | {{ siteName }}</title>
+	<title>New Entry | {{ siteName }}</title>
 </head>
 <body>
-<form class="form-horizontal" action="/newcustom" method="post">
+<form class="form-horizontal" action="/newsocial" method="post">
 <fieldset>
 
 <!-- Form Name -->
-<legend>New Custom Entry | {{ siteName }}</legend>
+<legend>New Entry | {{ siteName }}</legend>
 <p>Hey there {{ user_name }}, please enter the URL you would like to shorten below.</p>
 <p><a href="/">Make a Normal Short URL</a></p>
-<p><a href="/social">Make a Social Media Short URL</a></p>
+<p><a href="/custom">Make a Custom Short URL</a></p>
 <p><a href="/dash">View Your Dashboard</a></p>
 {{ error|safe }}
-			<div class="form-group">
-				<label class="col-md-4 control-label" for="name">URL ID</label>  
-				<div class="col-md-4">
-					<input name="id" id="id"> 
-				</div>
-			</div>
 <div class="form-group">
 	<label class="col-md-4 control-label" for="name">Link</label>  
 	<div class="col-md-4">

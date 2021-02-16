@@ -1,19 +1,24 @@
 # Versions
 All Releases:
-(a = alpha, b = beta, p = planned)
+(a = alpha, b = beta, p = planned, c = cancelled)
 
+- V5
+	- 5.3.2 p - Adding centralized linking module
+	- 5.3.1 p - Adding load balancing module
+	- 5.3.0 p - Adding anonomized tracking to csv files module
+	- 5.2.0 p - Adding plugins system
+	- 5.1.0 p - Making system modular
+	- 5.0.0 p - Adding production-server support
 - V4
-	-
-	- 4.3.2 p - Adding centralized linking module
-	- 4.3.1 p - Adding load balancing module
-	- 4.3.0 p - Adding anonomized tracking to csv files module
-	- 4.2.0 p - Adding plugins system
-	- 4.1.0 p - Making system modular
-	- 4.0.0 p - Adding production-server support
+	- 4.0.0 p - Added admin panel
+	- 4.0.0 p - Adding automatic updating script
 - V3
-	- 3.1.0 p - Added admin panel
-	- 3.0.0 p - Adding automatic updating script
+	- 3.3.0 p - Adding more preview types
+	- 3.2.0 p - Adding code preview
+	- 3.1.0 p - Adding "Featured Repl" preview image for twitter 
+	- 3.0.0 - Added social media url type and updated db
 - V2
+	- 2.5.6 c - Moved DB to other repl but had stability issues
 	- 2.5.5 - Migrated login script
 	- 2.5.4 - Cleaned up code
 	- 2.5.3 - Added logging
