@@ -7,10 +7,6 @@ class middleware():
 
 	def __call__(self, environ, start_response):
 		request = Request(environ)
-
-		if request.headers['X-Replit-User-Id']:
-			return self.app(environ, start_response)
-
-		print("Authorization Failed")
-		res = Response(u'Authorization failed', mimetype= 'text/plain', status=401)
-		return res(environ, start_response)
+		
+		print(request.headers['User-Agent'])
+		return self.app(environ, start_response)

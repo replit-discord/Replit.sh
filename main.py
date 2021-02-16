@@ -63,7 +63,7 @@ def compileLine(id): # When passed the id for a short URL, returns a preformatte
 
 @app.route('/')
 def index():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	try:
 		return render_template(
 		'submit.html',
 		siteName=siteName,
@@ -71,12 +71,12 @@ def index():
 		user_name=request.headers['X-Replit-User-Name'],
 		error=""
 	)
-	else:
+	except:
 		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!", siteName=siteName)
 
 @app.route('/custom')
 def custom():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	try:
 		return render_template(
 		'custom.html',
 		siteName=siteName,
@@ -84,12 +84,12 @@ def custom():
 		user_name=request.headers['X-Replit-User-Name'],
 		error=""
 	)
-	else:
+	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't an allowed user, sorry!")
 
 @app.route('/social')
 def social():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	try:
 		return render_template(
 		'social.html',
 		siteName=siteName,
@@ -97,7 +97,7 @@ def social():
 		user_name=request.headers['X-Replit-User-Name'],
 		error=""
 	)
-	else:
+	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't an allowed user, sorry!")
 
 @app.route('/dash')
@@ -117,7 +117,6 @@ def dashboard():
 			error = ""
 		)
 	except:
-		print("it broke")
 		return render_template(
 			'dashboard.html',
 			siteName=siteName,
@@ -157,7 +156,9 @@ def edit(id):
 
 @app.route('/del', methods=['POST'])
 def deleteEntry():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+	try:
 		user_id = request.headers['X-Replit-User-Id']
 		id = request.form['id']
 		users_ids = db["user_id_" + user_id]
@@ -168,12 +169,14 @@ def deleteEntry():
 			return redirect(url + "dash", 302)
 		except:
 			return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
-	else:
+	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 
 @app.route('/edt', methods=['POST'])
 def editEntry():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+	try:
 		user_id = request.headers['X-Replit-User-Id']
 		id = request.form['id']
 		newurl = request.form['newurl']
@@ -182,12 +185,16 @@ def editEntry():
 			return redirect(url + "dash", 302)
 		except:
 			return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
-	else:
+	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 
 @app.route('/favicon.ico')
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
+
+@app.route('/socialpost.png')
+def socialpostimg():
+	return send_from_directory(os.path.join(app.root_path, 'static'), 'socialpost.png')
 
 @app.route('/wp-login.php')
 def wploginphp():
@@ -221,6 +228,19 @@ def getId():
 
 @app.route('/<string:key>', methods=['GET'])
 def sendUrl(key):
+	if request.headers.get('User-Agent') == 'Twitterbot/1.0' or request.headers.get('User-Agent') == "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)":
+		print("its a bot")
+		socialObject = db['social_media_' + key]
+		repl_title = socialObject['title'].title()
+		repl_author = socialObject['username'].title()
+		return render_template(
+		'socialpost.html',
+		siteName=siteName,
+		repl_url="short_url_" + key,
+		twitter_title=f'{repl_title} - Replit',
+		twitter_desc=f'{repl_title} is a repl by {repl_author}.',
+		image_url=url+'socialpost.png'
+	)
 	key = "short_url_" + key
 	if not db[key]:
 		return render_template('error.html', code = "404", siteName=siteName, message = "That URL could not be found!")
@@ -230,7 +250,9 @@ def sendUrl(key):
 
 @app.route('/new', methods=['POST'])
 def newEntry():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+	try:
 		key = "short_url_" + newString()
 		keys = list(db.keys())
 		while key in keys:
@@ -252,12 +274,14 @@ def newEntry():
 		strings.append(key)
 		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
 		return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
-	else:
+	except:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
 @app.route('/newcustom', methods=['POST'])
 def newCustom():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+	try:
 		key = "short_url_" + request.form['id']
 		keys = list(db.keys())
 		if key in keys:
@@ -278,12 +302,14 @@ def newCustom():
 		strings.append(key)
 		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
 		return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
-	else:
+	except:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
 @app.route('/newsocial', methods=['POST'])
 def newSocial():
-	if int(request.headers['X-Replit-User-Id']) in users:
+	if len(request.headers['X-Replit-User-Id']) == 0 and int(request.headers['X-Replit-User-Id']) in users:
+		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
+	try:
 		urlSubmitted = request.form['url']
 		key = newString()
 		keyFinished = "short_url_" + key 
@@ -318,7 +344,7 @@ def newSocial():
 		strings.append(keyFinished)
 		db["user_id_" + request.headers['X-Replit-User-Id']] = strings
 		return render_template('done.html', siteName=siteName, newUrl = url + keyFinished[10:])
-	else:
+	except:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
 @app.errorhandler(400)

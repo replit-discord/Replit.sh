@@ -15,7 +15,7 @@ All Releases:
 - V3
 	- 3.3.0 p - Adding more preview types
 	- 3.2.0 p - Adding code preview
-	- 3.1.0 p - Adding "Featured Repl" preview image for twitter 
+	- 3.1.0 - Added "Featured Repl" preview image for twitter 
 	- 3.0.0 - Added social media url type and updated db
 - V2
 	- 2.5.6 c - Moved DB to other repl but had stability issues
