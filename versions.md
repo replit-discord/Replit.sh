@@ -14,7 +14,7 @@ All Releases:
 	- 4.0.0 p - Adding automatic updating script
 - V3
 	- 3.3.0 p - Adding more preview types
-	- 3.2.0 p - Adding code preview
+	- 3.2.0 - Adding code preview
 	- 3.1.1 - Fixed bug with cookies
 	- 3.1.0 - Added "Featured Repl" preview image for twitter 
 	- 3.0.0 - Added social media url type and updated db

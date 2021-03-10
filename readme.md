@@ -16,8 +16,8 @@ If you follow [@replit](https://twitter.com/replit) on Twitter, you may have rea
 	1. Rename `sample.env` to `.env`, as it will be where your user ids are stored. 
 	2. Head over to `https://[Your URL]/getid`, login with Repl.it, and then copy the user id you are given. 
 	3. Paste the URL into the array in your `.env` file. 
-		1. For example, if you are the only user and your id is `123456` then your `.env` file should look like `[123456]`. If you 
-		2. If you wanted to add your friend who has id `654321`, your `.env` file would look like `[123456,654321]`.
+		1. For example, if you are the only user and your id is `123456` then your `.env` file should look like `IDS=[123456]`. If you 
+		2. If you wanted to add your friend who has id `654321`, your `.env` file would look like `IDS=[123456,654321]`.
 3. Stop and Start the repl to complete your changes.
 
 ## Features

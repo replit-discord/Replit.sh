@@ -16,11 +16,25 @@
 <p><a href="/dash">View Your Dashboard</a></p>
 {{ error|safe }}
 <div class="form-group">
-	<label class="col-md-4 control-label" for="name">Link</label>  
+	<label class="col-md-4 control-label" for="name">Repl Link</label>  
 	<div class="col-md-4">
-	<input type="url" name="url" id="url" placeholder="https://example.com" pattern="https://.*" size="30" required> 
+	<input type="url" name="url" id="url" placeholder="https://repl.it/@piemadd/Replitsh-v3" pattern="https://.*" size="30" required> 
 	</div>
 </div>
+<div class="form-group">
+	<label class="col-md-4 control-label" for="name">Repl Talk Link</label>  
+	<div class="col-md-4">
+	<input type="url" name="talk" id="talk" placeholder="https://repl.it/talk/share/Replitsh-Replits-Official-URL-Shortener/79778" pattern="https://.*" size="30"> 
+	</div>
+</div>
+
+<div class="form-group">
+	<label class="col-md-4 control-label" for="name">Code Snippet (First 25 Lines)</label>  
+	<div class="col-md-4">
+	<textarea type="text" name="code" id="code" placeholder="print('UwU')" pattern="https://.*" size="30" required></textarea>
+	</div>
+</div>
+
 <!-- Button -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="submit"></label>

@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, jsonify
 from replit import db
-import random, string, json, os, validators, logging
+import random, string, json, os, validators, logging, requests
 from middleware import middleware
 
 print_db_on_start = False
@@ -9,9 +9,8 @@ import_db_on_start = False
 
 # Shortener Setup
 url = "https://replit.sh/" # URL of Your Site
+img_url = "https://imgrender.replit.sh/"
 siteName = "Replit.sh" # Name of your Site
-
-#logging.basicConfig(filename='replitsh.log',level=logging.INFO) #if you replate INFO with DEBUGGING have fun saying goodbye to your db lol
 
 if print_db_on_start:
 	print(list(db.keys()))
@@ -44,10 +43,9 @@ if import_db_on_start:
 		db[key] = value
 	print("Database imported")
 
-users = json.loads(os.getenv("IDS"))
+users = json.loads(os.getenv('IDS'))
 
 app = Flask('app')
-app.wsgi_app = middleware(app.wsgi_app)
 
 def newString():
 	letters = string.ascii_lowercase
@@ -59,9 +57,11 @@ def getStrings(id):
 	return urls
 
 def compileLine(id): # When passed the id for a short URL, returns a preformatted html table line
+	value = db[id]
+	key = id[10:]
 	return '<tr><td>' + id[10:] + '</td><td>' + db[id] + '</td><td>' + '<a href ="https://replit.sh/delete/' + id[10:] + '">Delete Entry</a></td><td><a href ="https://replit.sh/edit/' + id[10:] + '">Edit Entry</a></td></tr>'
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
 	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('index.html', siteName=siteName)
@@ -76,7 +76,7 @@ def index():
 	except:
 		return render_template('error.html', code = "401", message = "You aren't an allowed user, sorry!", siteName=siteName)
 
-@app.route('/custom')
+@app.route('/custom', methods=['GET', 'POST'])
 def custom():
 	try:
 		return render_template(
@@ -89,7 +89,7 @@ def custom():
 	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't an allowed user, sorry!")
 
-@app.route('/social')
+@app.route('/social', methods=['GET', 'POST'])
 def social():
 	try:
 		return render_template(
@@ -102,7 +102,7 @@ def social():
 	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't an allowed user, sorry!")
 
-@app.route('/dash')
+@app.route('/dash', methods=['GET', 'POST'])
 def dashboard():
 	try:
 		ids = getStrings(request.headers['X-Replit-User-Id'])
@@ -129,7 +129,7 @@ def dashboard():
 			error = "<p>No Entries Yet</p>"
 		)
 
-@app.route('/delete/<string:id>')
+@app.route('/delete/<string:id>', methods=['GET', 'POST'])
 def delete(id):
 	if not id:
 		id = "Please stop trying to break the site lol"
@@ -142,7 +142,7 @@ def delete(id):
 		id = id
 	)
 
-@app.route('/edit/<string:id>')
+@app.route('/edit/<string:id>', methods=['GET', 'POST'])
 def edit(id):
 	if not id:
 		id = "Please stop trying to break the site lol"
@@ -190,35 +190,35 @@ def editEntry():
 	except:
 		return render_template('error.html', code = "401", siteName=siteName, message = "You aren't allowed to do that!")
 
-@app.route('/favicon.ico')
+@app.route('/favicon.ico', methods=['GET', 'POST'])
 def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
-@app.route('/socialpost.png')
+@app.route('/socialpost.png', methods=['GET', 'POST'])
 def socialpostimg():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'socialpost.png')
 
-@app.route('/wp-login.php')
+@app.route('/wp-login.php', methods=['GET', 'POST'])
 def wploginphp():
 	flask.abort(404)
 
-@app.route('/sitemap.xml')
+@app.route('/sitemap.xml', methods=['GET', 'POST'])
 def sitemap():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'sitemap.xml')
 
-@app.route('/googlecec87f30263d281f.html')
+@app.route('/googlecec87f30263d281f.html', methods=['GET', 'POST'])
 def googleverifbsorwhatever():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'googlecec87f30263d281f.html')
 
-@app.route('/robots.txt')
+@app.route('/robots.txt', methods=['GET', 'POST'])
 def robots():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'robots.txt')
 
-@app.route('/humans.txt')
+@app.route('/humans.txt', methods=['GET', 'POST'])
 def humans():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'humans.txt')
 
-@app.route('/getid')
+@app.route('/getid', methods=['GET', 'POST'])
 def getId():
 	return render_template(
 		'getid.html',
@@ -228,29 +228,51 @@ def getId():
 		user_roles=request.headers['X-Replit-User-Roles']
 	)
 
-@app.route('/<string:key>', methods=['GET'])
+@app.route('/<string:key>', methods=['GET', 'POST'])
 def sendUrl(key):
-	if request.headers.get('User-Agent') == 'Twitterbot/1.0' or request.headers.get('User-Agent') == "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)":
+	print(request.headers['User-Agent'])
+	if request.headers.get('User-Agent') == 'Mozilla/5.0 (compatible; PaperLiBot/2.1; https://support.paper.li/entries/20023257-what-is-paper-li)' or request.headers.get('User-Agent') == 'Twitterbot/1.0' or request.headers.get('User-Agent') == "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)":
 		print("its a bot")
 		socialObject = db['social_media_' + key]
-		repl_title = socialObject['title'].title()
-		repl_author = socialObject['username'].title()
+		repl_title = socialObject['title']
+		repl_author = socialObject['username']
+
+		print(f'{repl_title} - Replit')
+		print(f'{repl_title} is a repl by {repl_author}.')
+		print(f'{img_url}{key}.png')
+
 		return render_template(
 		'socialpost.html',
 		siteName=siteName,
-		repl_url="short_url_" + key,
+		url=url + key,
 		twitter_title=f'{repl_title} - Replit',
 		twitter_desc=f'{repl_title} is a repl by {repl_author}.',
-		image_url=url+'socialpost.png'
+		image_url=f'{img_url}{key}.png'
 	)
-	key = "short_url_" + key
-	if not db[key]:
+	keyFinal = "short_url_" + key
+	if not db[keyFinal]:
 		return render_template('error.html', code = "404", siteName=siteName, message = "That URL could not be found!")
 	else:
-		redirectUrl = db[key]
-		return redirect(redirectUrl, 302)
+		redirectUrl = db[keyFinal]
+		try:
+			social = db[f'social_media_{key}']
+			if social['talk'] == "":
+				return redirect(redirectUrl, 302)
+			else:
+				return redirect(social['talk'], 302)
+		except:
+			return redirect(redirectUrl, 302)
 
-@app.route('/new', methods=['POST'])
+@app.route('/metadata/<string:key>', methods=['GET', 'POST'])
+def sendMeta(key):
+	data = db[f'social_media_{key}']
+	url = db[f'short_url_{key}']
+	try:
+		return jsonify({'url': url, 'title': data['title'], 'username': data['username'], 'talk': data['talk'], 'code': data['code']})
+	except:
+		return jsonify({'url': url, 'title': data['title'], 'username': data['username'], 'talk': data['talk']})
+	
+@app.route('/new', methods=['GET', 'POST'])
 def newEntry():
 	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
@@ -263,7 +285,7 @@ def newEntry():
 		return render_template(
 			'submit.html',
 			siteName=siteName,
-			user_id=user,
+			user_id=request.headers['X-Replit-User-Id'],
 			user_name=request.headers['X-Replit-User-Name'],
 			error="That was not a valid URL. Please enter a valid URL and try again."
 		)
@@ -276,7 +298,7 @@ def newEntry():
 	db["user_id_" + request.headers['X-Replit-User-Id']] = strings
 	return render_template('done.html', siteName=siteName, newUrl = url + key[10:])
 
-@app.route('/newcustom', methods=['POST'])
+@app.route('/newcustom', methods=['GET', 'POST'])
 def newCustom():
 	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
@@ -289,7 +311,7 @@ def newCustom():
 			return render_template(
 				'manual.html',
 				siteName=siteName,
-				user_id=user,
+				user_id=request.headers['X-Replit-User-Id'],
 				user_name=request.headers['X-Replit-User-Name'],
 				error="That was not a valid URL. Please enter a valid URL and try again."
 			)
@@ -304,11 +326,13 @@ def newCustom():
 	except:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 
-@app.route('/newsocial', methods=['POST'])
+@app.route('/newsocial', methods=['GET', 'POST'])
 def newSocial():
 	if len(request.headers['X-Replit-User-Id']) == 0 or int(request.headers['X-Replit-User-Id']) not in users:
 		return render_template('error.html', siteName=siteName, code = "401", message = "You aren't allowed to do that!")
 	urlSubmitted = request.form['url']
+	urlTalk = request.form['talk']
+	code = request.form['code']
 	key = newString()
 	keyFinished = "short_url_" + key 
 	keys = list(db.keys())
@@ -320,20 +344,30 @@ def newSocial():
 		return render_template(
 			'social.html',
 			siteName=siteName,
-			user_id=user,
+			user_id=request.headers['X-Replit-User-Id'],
 			user_name=request.headers['X-Replit-User-Name'],
 			error="That was not a valid URL. Please enter a valid URL and try again."
 		)
-	try:
+	try:	
 		db[keyFinished] = urlSubmitted
 		indexOfAt = urlSubmitted.index("@")
 		indexOfSlash = urlSubmitted.index("/", indexOfAt)
-		title = urlSubmitted[indexOfSlash + 1:]
-		username = urlSubmitted[indexOfAt + 1:indexOfSlash]
-		socialMeta = {"title": title, "username": username}
+		x = list(urlSubmitted[indexOfSlash + 1:].title())
+		for (i, s) in enumerate(list(urlSubmitted[indexOfSlash + 1:])):
+			if s.isupper():
+				x[i] = s
+		title = "".join(x).replace("-", " ").replace("_", " ")
+		x = list(urlSubmitted[indexOfAt + 1:indexOfSlash].title())
+		for (i, s) in enumerate(list(urlSubmitted[indexOfAt + 1:indexOfSlash])):
+			if s.isupper():
+				x[i] = s
+		username = "".join(x)
+		socialMeta = {"title": title, "username": username, "talk": urlTalk, "code": code}
 		db['social_media_' + key] = socialMeta
-	except:
-		return render_template('error.html', siteName=siteName, code = "401", message = "Not a valid Replit URL!")
+	except Exception as e:
+			print("secondfailed")
+			print(e)
+			return render_template('error.html', siteName=siteName, code = "401", message = "Not a valid Replit URL!")
 
 	try:
 		strings = list(getStrings(request.headers['X-Replit-User-Id']))
@@ -341,6 +375,7 @@ def newSocial():
 		strings = []
 	strings.append(keyFinished)
 	db["user_id_" + request.headers['X-Replit-User-Id']] = strings
+	requests.get(f'{img_url}/{key}')
 	return render_template('done.html', siteName=siteName, newUrl = url + keyFinished[10:])
 
 @app.errorhandler(400)

@@ -8,5 +8,5 @@ class middleware():
 	def __call__(self, environ, start_response):
 		request = Request(environ)
 		
-		print(request.headers['User-Agent'])
+		#c
 		return self.app(environ, start_response)
