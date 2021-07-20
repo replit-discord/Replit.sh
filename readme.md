@@ -1,7 +1,7 @@
 # Replit.sh: Repl.it's Internal URL Shortener
 
 # Note! 
-This repository is way out of date. Please use (v4)[https://github.com/replit-discord/Replit.sh-v4].
+This repository is way out of date. Please use [v4](https://github.com/replit-discord/Replit.sh-v4).
 
 ## Preface
 If you follow [@replit](https://twitter.com/replit) on Twitter, you may have realized some links showing up on our posts starting with the url [replit.sh](https://replit.sh). Versions 3 and 4 are on hold for now due to the need for dependencies to be built up in the Replit.sh ecosystem (such as a rework of the modules). 
